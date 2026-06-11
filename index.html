@@ -94,6 +94,24 @@
   .loading{text-align:center;color:var(--faint);padding:48px;font-size:.9rem}
   mark{background:rgba(194,163,107,.3);color:#fff;border-radius:2px}
 
+  /* ---- 이번 주 일정 ---- */
+  .sch-upd{color:var(--faint);font-size:.72rem;margin:0 0 16px}
+  .sch-day{margin:0 0 8px;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--card)}
+  .sch-head{display:flex;align-items:baseline;gap:8px;padding:11px 16px;background:#0f0f10;border-bottom:1px solid var(--line)}
+  .sch-day.today .sch-head{background:#16140f}
+  .sch-dow{font-size:.95rem;font-weight:700;color:var(--text)}
+  .sch-date{font-size:.78rem;color:var(--faint)}
+  .sch-cnt{margin-left:auto;font-size:.7rem;color:var(--faint)}
+  .sch-today-badge{margin-left:auto;font-size:.66rem;color:var(--accent);background:rgba(194,163,107,.12);
+    border-radius:10px;padding:1px 8px;font-weight:700}
+  .sch-list{padding:6px 16px 10px}
+  .sch-ev{display:flex;gap:12px;padding:8px 0;border-top:1px solid var(--line)}
+  .sch-ev:first-child{border-top:none}
+  .sch-time{flex:0 0 96px;font-size:.8rem;color:var(--accent);font-variant-numeric:tabular-nums;font-weight:600;line-height:1.45}
+  .sch-time .allday{color:var(--dim)}
+  .sch-title{font-size:.92rem;color:var(--text);font-weight:500;line-height:1.45}
+  .sch-none{padding:9px 16px 11px;color:var(--faint);font-size:.82rem}
+
   @media (max-width:760px){
     .layout{flex-direction:column}
     .sidebar{position:static;width:auto;flex:none;max-height:none;border-right:none;
@@ -113,6 +131,7 @@
       <button class="cat active" data-cat="all">📚 전체</button>
       <button class="cat" data-cat="news">📰 외식업 뉴스</button>
       <button class="cat" data-cat="yt">🎥 경제·트렌드 유튜브</button>
+      <button class="cat" data-cat="sched">📅 이번 주 일정</button>
       <button class="cat" data-cat="bm">⭐ 북마크 <span class="badge" id="bmCount">0</span></button>
       <button class="cat" data-cat="monthly">🗓️ 월간 리캡</button>
     </div>
@@ -131,7 +150,7 @@
 <script>
 const WD=["일","월","화","수","목","금","토"];
 const BMK="briefing_bookmarks_v1";
-const state={news:[],yt:[],monthly:[],idx:{},byDate:{},dates:[],cat:"all",q:"",calY:0,calM:0,bm:{}};
+const state={news:[],yt:[],monthly:[],sched:[],schedUpd:"",idx:{},byDate:{},dates:[],cat:"all",q:"",calY:0,calM:0,bm:{}};
 function esc(s){return (s==null?"":String(s)).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
 function hl(s){const t=esc(s);if(!state.q)return t;
   try{return t.replace(new RegExp("("+state.q.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+")","gi"),"<mark>$1</mark>");}catch(e){return t;}}
@@ -143,6 +162,9 @@ function saveBM(){try{localStorage.setItem(BMK,JSON.stringify(state.bm));}catch(
   document.getElementById("bmCount").textContent=Object.keys(state.bm).length;}
 async function load(name){try{const r=await fetch(name+"?t="+Date.now());if(!r.ok)return [];
   const j=await r.json();return Array.isArray(j)?j:[];}catch(e){return [];}}
+async function loadObj(name){try{const r=await fetch(name+"?t="+Date.now());if(!r.ok)return {};
+  const j=await r.json();return (j&&typeof j==="object"&&!Array.isArray(j))?j:{};}catch(e){return {};}}
+function fmtLocal(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;}
 function itemMatch(it){if(!state.q)return true;
   return ((it.title||"")+" "+(it.summary||"")).toLowerCase().includes(state.q.toLowerCase());}
 function itemLi(it,src,date,cls){
@@ -216,8 +238,39 @@ function renderBM(){
     </li>`;}).join("");
   return `<section class="day"><div class="day-date">⭐ 북마크 <span class="wd">${ids.length}개</span></div><ol class="items">${lis}</ol></section>`;
 }
+function renderSchedule(){
+  const app=document.getElementById("app");
+  const dow=["일","월","화","수","목","금","토"];
+  const now=new Date(),t0=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+  const todayS=fmtLocal(t0);
+  const byDate={};
+  (state.sched||[]).forEach(e=>{if(!e||!e.date)return;
+    if(state.q&&!((e.title||"").toLowerCase().includes(state.q.toLowerCase())))return;
+    (byDate[e.date]=byDate[e.date]||[]).push(e);});
+  Object.values(byDate).forEach(a=>a.sort((x,y)=>
+    (y.allDay?1:0)-(x.allDay?1:0)||(x.start||"").localeCompare(y.start||"")));
+  let cards="";
+  for(let i=0;i<7;i++){
+    const d=new Date(t0.getFullYear(),t0.getMonth(),t0.getDate()+i);
+    const ds=fmtLocal(d),evs=byDate[ds]||[],isToday=ds===todayS;
+    const right=isToday?`<span class="sch-today-badge">오늘</span>`
+      :evs.length?`<span class="sch-cnt">${evs.length}건</span>`:`<span class="sch-cnt">—</span>`;
+    const body=evs.length?`<div class="sch-list">`+evs.map(e=>{
+        const time=e.allDay?`<span class="allday">종일</span>`
+          :`${esc(e.start||"")}${e.end?"~"+esc(e.end):""}`;
+        return `<div class="sch-ev"><div class="sch-time">${time}</div><div class="sch-title">${hl(e.title)}</div></div>`;
+      }).join("")+`</div>`
+      :`<div class="sch-none">일정 없음</div>`;
+    cards+=`<div class="sch-day${isToday?' today':''}"><div class="sch-head">
+      <span class="sch-dow">${dow[d.getDay()]}</span>
+      <span class="sch-date">${d.getMonth()+1}.${String(d.getDate()).padStart(2,"0")}</span>${right}</div>${body}</div>`;
+  }
+  const upd=state.schedUpd?`<div class="sch-upd">📅 ${esc(state.schedUpd)} 기준 · 매일 아침 자동 갱신</div>`:"";
+  app.innerHTML=`<section class="day"><div class="day-date">📅 이번 주 일정</div>${upd}${cards}</section>`;
+}
 function renderContent(){
   const app=document.getElementById("app");
+  if(state.cat==="sched"){renderSchedule();return;}
   const html=state.cat==="bm"?renderBM():state.cat==="monthly"?renderMonthly():renderDates();
   app.innerHTML=html.trim()?html:
     `<div class="empty"><div class="big">◖</div><div>${state.q?"검색 결과가 없어요.":"아직 브리핑이 없어요."}</div></div>`;
@@ -248,8 +301,9 @@ function toggleBM(id,src,date){
 }
 (async function(){
   loadBM();
-  const [news,yt,monthly]=await Promise.all([load("news.json"),load("youtube.json"),load("monthly.json")]);
+  const [news,yt,monthly,cal]=await Promise.all([load("news.json"),load("youtube.json"),load("monthly.json"),loadObj("calendar.json")]);
   state.news=news;state.yt=yt;state.monthly=monthly;
+  state.sched=Array.isArray(cal.events)?cal.events:[];state.schedUpd=cal.updated||"";
   news.forEach(e=>{if(e&&e.date)(state.byDate[e.date]=state.byDate[e.date]||{}).news=e;});
   yt.forEach(e=>{if(e&&e.date)(state.byDate[e.date]=state.byDate[e.date]||{}).yt=e;});
   state.dates=Object.keys(state.byDate).sort().reverse();
