@@ -328,14 +328,20 @@ function saveSRS(){try{localStorage.setItem(SRSK,JSON.stringify(state.srs));}cat
 function cardInfo(id){const s=state.idx[id]||state.bm[id];if(!s)return null;
   return {title:s.title,summary:s.summary,link:s.link,date:s.date,src:s.src,memo:(state.bm[id]||{}).memo||""};}
 function cardPool(){const ids=new Set();
-  Object.keys(state.idx).forEach(id=>{if(state.idx[id].hi)ids.add(id);});
-  Object.keys(state.bm).forEach(id=>ids.add(id));
+  // 그날의 꼭 기억할 이슈만: 날짜별 주목(★) 카드 최대 3장 (뉴스 1·유튜브 1 + 뉴스 1)
+  const byDate={};
+  Object.keys(state.idx).forEach(id=>{const s=state.idx[id];if(!s.hi)return;
+    const d=byDate[s.date||""]=byDate[s.date||""]||{news:[],yt:[]};
+    d[s.src==="yt"?"yt":"news"].push(id);});
+  Object.values(byDate).forEach(g=>{
+    [g.news[0],g.yt[0],g.news[1]].filter(Boolean).forEach(id=>ids.add(id));});
+  Object.keys(state.bm).forEach(id=>ids.add(id)); // 직접 북마크한 건 모두 포함
   return [...ids].filter(id=>cardInfo(id));}
 function dueIds(){const today=fmtLocal(new Date());const due=[],fresh=[];
   cardPool().forEach(id=>{const e=state.srs[id];
     if(!e)fresh.push(id);else if((e.due||"")<=today)due.push(id);});
   fresh.sort((a,b)=>((cardInfo(b)||{}).date||"").localeCompare((cardInfo(a)||{}).date||""));
-  return due.concat(fresh.slice(0,10)); // 새 카드는 하루 10장까지
+  return due.concat(fresh.slice(0,5)); // 새 카드는 하루 5장까지
 }
 function updateRevBadge(){const el=document.getElementById("revCount");if(el)el.textContent=dueIds().length;}
 function nextIv(e,g){const ease=e?e.ease:2.5,iv=e?e.interval:0,reps=e?e.reps:0;
