@@ -7,7 +7,7 @@
       {
         "name": "📈 경제",
         "items": [
-          {"title": "[당장사] 뉴욕증시 상승…반도체 랠리·원달러 환율 점검", "summary": "브로드컴 실적 여파 속 반도체주 강세와 환율 흐름을 정리한 데일리 마감 브리핑.", "link": "https://www.youtube.com/watch?v=5uBBOp_ey14"},
+          {"highlight": true, "title": "[당장사] 뉴욕증시 상승…반도체 랠리·원달러 환율 점검", "summary": "브로드컴 실적 여파 속 반도체주 강세와 환율 흐름을 정리한 데일리 마감 브리핑.", "link": "https://www.youtube.com/watch?v=5uBBOp_ey14"},
           {"title": "(샘플) 코스피 9000 턱밑…하반기 증시 전망", "summary": "지수 레벨 부담과 외국인 수급을 짚는 시황 영상. 실제 루틴에서는 매일 최신 영상으로 교체됩니다.", "link": "https://www.youtube.com/results?search_query=경제+전망"}
         ]
       },

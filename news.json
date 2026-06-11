@@ -4,10 +4,10 @@
     "title": "외식업 뉴스 10선 (샘플)",
     "insight": "배달플랫폼發 변화가 핵심 — 배민 컨설팅 성과·캐치테이블 글로벌화는 '데이터/플랫폼 의존도'가 외식업 생존 변수로 굳어지는 신호. (이 항목은 디자인 확인용 샘플이며, 실제 브리핑이 매일 위에 쌓입니다)",
     "items": [
-      {"title": "배민 '가게 성장 컨설팅' 3기 — 주문 36.5%·거래액 29.9%↑", "summary": "우아한형제들의 1대1 맞춤 교육 수료 사장님들의 주문·매출 지표가 크게 개선. 플랫폼 주도 컨설팅의 실효성이 입증된 사례.", "link": "https://weekly.hankooki.com/news/articleView.html?idxno=7168445"},
+      {"highlight": true, "title": "배민 '가게 성장 컨설팅' 3기 — 주문 36.5%·거래액 29.9%↑", "summary": "우아한형제들의 1대1 맞춤 교육 수료 사장님들의 주문·매출 지표가 크게 개선. 플랫폼 주도 컨설팅의 실효성이 입증된 사례.", "link": "https://weekly.hankooki.com/news/articleView.html?idxno=7168445"},
       {"title": "캐치테이블, 글로벌 앱 MAU 100만 돌파 (전년比 122%↑)", "summary": "외식 통합 솔루션 기업 와드의 캐치테이블이 글로벌 월간 이용자 100만을 넘김. 국내 예약·웨이팅 솔루션의 해외 확장 신호.", "link": "http://www.segyebiz.com/newsView/20260609514453?OutUrl=naver"},
       {"title": "졸리비, 컴포즈커피 인수 성과…국내 외식업 큰손 부상", "summary": "필리핀 졸리비가 컴포즈커피 투자 성과를 입증하며 국내 외식 M&A 큰손으로 부상. 향후 인수 브랜드의 글로벌화가 관건.", "link": "https://www.greened.kr/news/articleView.html?idxno=342186"},
-      {"title": "소상공인·외식업중앙회 국회 앞 집회 — 최저임금·배달수수료 부담", "summary": "한국외식업중앙회 등이 식재료비·공공요금·배달수수료 부담을 호소하며 생존권 보장과 고용정책 전환을 촉구.", "link": "http://www.fnnews.com/news/202606091544057439"},
+      {"highlight": true, "title": "소상공인·외식업중앙회 국회 앞 집회 — 최저임금·배달수수료 부담", "summary": "한국외식업중앙회 등이 식재료비·공공요금·배달수수료 부담을 호소하며 생존권 보장과 고용정책 전환을 촉구.", "link": "http://www.fnnews.com/news/202606091544057439"},
       {"title": "대구 창업 생태계, 푸드테크(로봇 바리스타) 부상", "summary": "수성알파시티 기반 푸드테크 기업이 로봇 바리스타·F&B 스마트매장 SW로 외식업 운영 패러다임을 전환 중.", "link": "https://www.idaegu.com/news/articleView.html?idxno=663489"},
       {"title": "경남도, 착한가격업소 894곳 지정 목표 — 82%가 외식업", "summary": "주변 상권보다 저렴한 가격·양질 서비스 업소를 지자체가 지정·지원. 외식업 분야가 713곳(82%)으로 절대다수.", "link": "https://www.idomin.com/news/articleView.html?idxno=2007554"}
     ]
