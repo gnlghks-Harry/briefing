@@ -186,6 +186,7 @@
       <button class="cat" data-cat="rev">🧠 복습 카드 <span class="badge" id="revCount">0</span></button>
       <button class="cat" data-cat="gl">📖 용어·트렌드</button>
       <button class="cat" data-cat="monthly">🗓️ 월간 리캡</button>
+      <button class="cat" data-cat="mt">📋 회의록 🔒</button>
     </div>
     <div class="nav-sec">
       <div class="nav-h">달력</div>
@@ -203,7 +204,7 @@
 const WD=["일","월","화","수","목","금","토"];
 const BMK="briefing_bookmarks_v1";
 const SRSK="briefing_srs_v1";
-const state={news:[],yt:[],monthly:[],sched:[],schedUpd:"",glossary:{terms:[]},idx:{},byDate:{},dates:[],cat:"all",q:"",calY:0,calM:0,bm:{},srs:{},rq:null,rqi:0,flip:false};
+const state={news:[],yt:[],monthly:[],mt:[],sched:[],schedUpd:"",glossary:{terms:[]},idx:{},byDate:{},dates:[],cat:"all",q:"",calY:0,calM:0,bm:{},srs:{},rq:null,rqi:0,flip:false};
 function esc(s){return (s==null?"":String(s)).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
 function hl(s){const t=esc(s);if(!state.q)return t;
   try{return t.replace(new RegExp("("+state.q.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+")","gi"),"<mark>$1</mark>");}catch(e){return t;}}
@@ -452,9 +453,19 @@ function renderContent(){
   if(state.cat==="sched"){renderSchedule();return;}
   if(state.cat==="rev"){renderReview();return;}
   if(state.cat==="gl"){renderGlossary();return;}
+  if(state.cat==="mt"){renderMeetings();return;}
   const html=state.cat==="bm"?renderBM():state.cat==="monthly"?renderMonthly():renderDates();
   app.innerHTML=html.trim()?html:
     `<div class="empty"><div class="big">◖</div><div>${state.q?"검색 결과가 없어요.":"아직 브리핑이 없어요."}</div></div>`;
+}
+function renderMeetings(){
+  const app=document.getElementById("app");
+  const list=state.mt.filter(m=>!state.q||(m.title||"").toLowerCase().includes(state.q.toLowerCase()));
+  if(!list.length){app.innerHTML=`<div class="empty"><div class="big">◖</div><div>${state.q?"검색 결과가 없어요.":"아직 회의록이 없어요. 자정 파이프라인이 채워줍니다."}</div></div>`;return;}
+  const lis=list.map(m=>`<li><div class="t">${m.url?`<a href="${esc(m.url)}" target="_blank" rel="noopener">${hl(m.title)} 🔒</a>`:`<span class="tt">${hl(m.title)} 🔒</span>`}</div><div class="s">${fmtDate(m.date)}</div></li>`).join("");
+  app.innerHTML=`<section class="day"><div class="day-date">📋 회의록 <span class="wd">${list.length}건 · 내부 전용</span></div>
+    <div class="s" style="margin:4px 0 10px;color:var(--faint);font-size:.78rem">🔒 링크는 Tailscale 연결된 기기에서만 열립니다. 외부에는 익명 제목만 공개돼요.</div>
+    <ol class="items">${lis}</ol></section>`;
 }
 function renderCal(){
   const grid=document.getElementById("calGrid");
@@ -482,8 +493,8 @@ function toggleBM(id,src,date){
 }
 (async function(){
   loadBM();loadSRS();
-  const [news,yt,monthly,cal,gl]=await Promise.all([load("news.json"),load("youtube.json"),load("monthly.json"),loadObj("calendar.json"),loadObj("glossary.json")]);
-  state.news=news;state.yt=yt;state.monthly=monthly;
+  const [news,yt,monthly,cal,gl,mt]=await Promise.all([load("news.json"),load("youtube.json"),load("monthly.json"),loadObj("calendar.json"),loadObj("glossary.json"),load("meetings.json")]);
+  state.news=news;state.yt=yt;state.monthly=monthly;state.mt=mt;
   state.sched=Array.isArray(cal.events)?cal.events:[];state.schedUpd=cal.updated||"";
   state.glossary=gl.terms?gl:{terms:[]};
   news.forEach(e=>{if(e&&e.date)(state.byDate[e.date]=state.byDate[e.date]||{}).news=e;});
