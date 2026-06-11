@@ -114,6 +114,7 @@
       <button class="cat" data-cat="news">📰 외식업 뉴스</button>
       <button class="cat" data-cat="yt">🎥 경제·트렌드 유튜브</button>
       <button class="cat" data-cat="bm">⭐ 북마크 <span class="badge" id="bmCount">0</span></button>
+      <button class="cat" data-cat="monthly">🗓️ 월간 리캡</button>
     </div>
     <div class="nav-sec">
       <div class="nav-h">달력</div>
@@ -130,7 +131,7 @@
 <script>
 const WD=["일","월","화","수","목","금","토"];
 const BMK="briefing_bookmarks_v1";
-const state={news:[],yt:[],byDate:{},dates:[],cat:"all",q:"",calY:0,calM:0,bm:{}};
+const state={news:[],yt:[],monthly:[],idx:{},byDate:{},dates:[],cat:"all",q:"",calY:0,calM:0,bm:{}};
 function esc(s){return (s==null?"":String(s)).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
 function hl(s){const t=esc(s);if(!state.q)return t;
   try{return t.replace(new RegExp("("+state.q.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+")","gi"),"<mark>$1</mark>");}catch(e){return t;}}
@@ -178,6 +179,26 @@ function renderDates(){
     return `<section class="day" id="d-${d}"><div class="day-date">${fmtDate(d)}</div>${inner}</section>`;
   }).join("");
 }
+function addIdx(it,src,date){if(!it)return;const id=itemId(it);if(!state.idx[id])state.idx[id]={title:it.title,summary:it.summary,link:it.link,date:date,src:src};}
+function buildIdx(){
+  state.news.forEach(e=>(e.items||[]).forEach(it=>addIdx(it,"news",e.date)));
+  state.yt.forEach(e=>(e.sections||[]).forEach(s=>(s.items||[]).forEach(it=>addIdx(it,"yt",e.date))));
+  state.monthly.forEach(m=>(m.sections||[]).forEach(s=>{const src=/경제|트렌드|유튜브/.test(s.name||"")?"yt":"news";(s.items||[]).forEach(it=>addIdx(it,src,m.month));}));
+}
+function renderMonthly(){
+  const ms=state.monthly.slice().sort((a,b)=>(b.month||"").localeCompare(a.month||""));
+  if(!ms.length)return `<div class="empty"><div class="big">🗓️</div><div>아직 월간 리캡이 없어요.</div>
+    <div style="font-size:.82rem;margin-top:6px">매월 1일 아침, 지난달 핵심이 자동 정리됩니다.</div></div>`;
+  const out=ms.map(m=>{
+    let body="";
+    (m.sections||[]).forEach(s=>{const src=/경제|트렌드|유튜브/.test(s.name||"")?"yt":"news";const h=itemsHTML(s.items,src,m.month);if(h)body+=`<div class="sec-name">${esc(s.name)}</div>${h}`;});
+    if(!body&&state.q)return "";
+    const ov=m.overview&&(!state.q||body||(m.overview||"").toLowerCase().includes(state.q.toLowerCase()))?`<div class="insight"><span class="lbl">이달의 총평</span>${hl(m.overview)}</div>`:"";
+    if(!ov&&!body)return "";
+    return `<section class="day"><div class="day-date">🗓️ ${esc(m.title||m.month)}</div>${ov}${body}</section>`;
+  }).join("");
+  return out.trim()||`<div class="empty"><div class="big">🔎</div><div>검색 결과가 없어요.</div></div>`;
+}
 function renderBM(){
   const ids=Object.keys(state.bm).filter(id=>itemMatch(state.bm[id]));
   if(!ids.length)return `<div class="empty"><div class="big">⭐</div><div>${state.q?"검색 결과가 없어요.":"저장한 항목이 없어요."}</div>
@@ -197,7 +218,7 @@ function renderBM(){
 }
 function renderContent(){
   const app=document.getElementById("app");
-  const html=state.cat==="bm"?renderBM():renderDates();
+  const html=state.cat==="bm"?renderBM():state.cat==="monthly"?renderMonthly():renderDates();
   app.innerHTML=html.trim()?html:
     `<div class="empty"><div class="big">◖</div><div>${state.q?"검색 결과가 없어요.":"아직 브리핑이 없어요."}</div></div>`;
 }
@@ -221,26 +242,18 @@ function renderCal(){
 }
 function toggleBM(id,src,date){
   if(state.bm[id]){delete state.bm[id];}
-  else{
-    // find snapshot from data
-    let snap=null;
-    for(const e of (src==="yt"?state.yt:state.news)){
-      const its=e.sections?e.sections.flatMap(s=>s.items):e.items;
-      const m=(its||[]).find(x=>itemId(x)===id);
-      if(m){snap={title:m.title,summary:m.summary,link:m.link,date:e.date,src};break;}
-    }
-    if(!snap)snap={title:id,summary:"",link:(id.startsWith("t:")?"":id),date:date,src};
-    snap.memo="";state.bm[id]=snap;
-  }
+  else{const s=state.idx[id]||{title:id,summary:"",link:(id.startsWith("t:")?"":id),date:date,src:src};
+    state.bm[id]={title:s.title,summary:s.summary,link:s.link,date:s.date||date,src:s.src||src,memo:""};}
   saveBM();renderContent();
 }
 (async function(){
   loadBM();
-  const [news,yt]=await Promise.all([load("news.json"),load("youtube.json")]);
-  state.news=news;state.yt=yt;
+  const [news,yt,monthly]=await Promise.all([load("news.json"),load("youtube.json"),load("monthly.json")]);
+  state.news=news;state.yt=yt;state.monthly=monthly;
   news.forEach(e=>{if(e&&e.date)(state.byDate[e.date]=state.byDate[e.date]||{}).news=e;});
   yt.forEach(e=>{if(e&&e.date)(state.byDate[e.date]=state.byDate[e.date]||{}).yt=e;});
   state.dates=Object.keys(state.byDate).sort().reverse();
+  buildIdx();
   const latest=state.dates[0]||new Date().toISOString().slice(0,10);
   const lm=/^(\d{4})-(\d{2})/.exec(latest);state.calY=+lm[1];state.calM=+lm[2]-1;
   document.getElementById("bmCount").textContent=Object.keys(state.bm).length;
