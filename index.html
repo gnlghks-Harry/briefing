@@ -147,6 +147,21 @@
   .rev-btn.easy .g{color:#8fb8d9}
   .rev-kbd{margin-top:10px;text-align:center;color:var(--faint);font-size:.7rem}
 
+  /* ---- 용어 사전 + 키워드 트렌드 ---- */
+  .kw-row{display:flex;align-items:center;gap:10px;padding:4px 0}
+  .kw-name{flex:0 0 130px;font-size:.86rem;color:var(--text);text-align:right;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .kw-bar{flex:1;height:8px;background:var(--line);border-radius:4px;overflow:hidden}
+  .kw-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),#8a744d);border-radius:4px}
+  .kw-cnt{flex:0 0 26px;font-size:.74rem;color:var(--faint)}
+  .gl-item{padding:12px 0;border-top:1px solid var(--line)}
+  .gl-item:first-child{border-top:none}
+  .gl-term{font-size:.98rem;font-weight:700;color:#fff}
+  .gl-tag{display:inline-block;font-size:.66rem;color:var(--accent);background:rgba(194,163,107,.12);
+    border-radius:8px;padding:1px 8px;margin-left:8px;vertical-align:2px}
+  .gl-added{font-size:.68rem;color:var(--faint);margin-left:8px}
+  .gl-def{font-size:.86rem;color:var(--dim);margin-top:4px;line-height:1.6}
+
   @media (max-width:760px){
     .layout{flex-direction:column}
     .sidebar{position:static;width:auto;flex:none;max-height:none;border-right:none;
@@ -169,6 +184,7 @@
       <button class="cat" data-cat="sched">📅 이번 주 일정</button>
       <button class="cat" data-cat="bm">⭐ 북마크 <span class="badge" id="bmCount">0</span></button>
       <button class="cat" data-cat="rev">🧠 복습 카드 <span class="badge" id="revCount">0</span></button>
+      <button class="cat" data-cat="gl">📖 용어·트렌드</button>
       <button class="cat" data-cat="monthly">🗓️ 월간 리캡</button>
     </div>
     <div class="nav-sec">
@@ -187,7 +203,7 @@
 const WD=["일","월","화","수","목","금","토"];
 const BMK="briefing_bookmarks_v1";
 const SRSK="briefing_srs_v1";
-const state={news:[],yt:[],monthly:[],sched:[],schedUpd:"",idx:{},byDate:{},dates:[],cat:"all",q:"",calY:0,calM:0,bm:{},srs:{},rq:null,rqi:0,flip:false};
+const state={news:[],yt:[],monthly:[],sched:[],schedUpd:"",glossary:{terms:[]},idx:{},byDate:{},dates:[],cat:"all",q:"",calY:0,calM:0,bm:{},srs:{},rq:null,rqi:0,flip:false};
 function esc(s){return (s==null?"":String(s)).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
 function hl(s){const t=esc(s);if(!state.q)return t;
   try{return t.replace(new RegExp("("+state.q.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+")","gi"),"<mark>$1</mark>");}catch(e){return t;}}
@@ -382,10 +398,54 @@ function renderReview(){
   if(cardEl)cardEl.onclick=()=>{state.flip=true;renderContent();};
   app.querySelectorAll(".rev-btn").forEach(b=>b.onclick=()=>rate(id,b.dataset.g));
 }
+/* ---- 용어 사전 + 키워드 트렌드 ---- */
+const KW_STOP=new Set(["오늘","이유","정리","전망","분석","점검","마감","최신","완벽","주요","관련","당신","뉴스","영상","유튜브","샘플","항목","실제","브리핑","디자인","확인용","이번","지난","최근","이렇게","요즘","진짜","가짜","말고","먼저","위해","통해","대비","두배","웃돌아","바뀌었어요","살아남을","거예요","하세요","마세요","서두르지","반복되는","흔드는","공략하라","주목하는","기분에","기업들이","꼭","알아야","실무자가","가지","핵심","화두","신호","변수","최대","이후","우려","재점화","성과","목표","총력","도입","확대","확산","부상","출품","지정","해소","협약","앞세워","감당","결의대회","집회","국회","민관","합동","위생점검","특수","체험","마케팅","유통가","수도권","해운대","바가지요금","없는","안심","해외","국내","글로벌","서울시","경남도","대구","생태계","하반기","상반기","급등","급락","상승","하락","증발","전문가들"]);
+function kwStrip(t){for(const s of ["에서","으로","부터","까지","은","는","이","가","을","를","의","에","로","도","와","과","만","들"]){
+  if(t.length>2&&t.endsWith(s))return t.slice(0,t.length-s.length);}return t;}
+function kwTrend(){
+  const byM={};
+  const feed=(m,txt)=>{(txt||"").split(/[^0-9A-Za-z가-힣]+/).forEach(w=>{
+    w=kwStrip(w);
+    if(w.length<2||/^\d+$/.test(w)||/^\d+(월|일|년|기|개|곳|조|억|만|위|호)$/.test(w)||KW_STOP.has(w))return;
+    (byM[m]=byM[m]||{})[w]=(byM[m][w]||0)+1;});};
+  state.news.forEach(e=>{const m=(e.date||"").slice(0,7);if(!m)return;
+    feed(m,e.insight);(e.items||[]).forEach(it=>feed(m,it.title));});
+  state.yt.forEach(e=>{const m=(e.date||"").slice(0,7);if(!m)return;
+    feed(m,e.insight);(e.sections||[]).forEach(s=>(s.items||[]).forEach(it=>feed(m,it.title)));});
+  let out="";
+  Object.keys(byM).sort().reverse().forEach(m=>{
+    const all=Object.entries(byM[m]).sort((a,b)=>b[1]-a[1]);
+    const rep=all.filter(x=>x[1]>=2);
+    const top=(rep.length?rep:all).slice(0,10);
+    if(!top.length)return;
+    const max=top[0][1];
+    out+=`<div class="sec-name">${m.replace("-",".")}</div>`+top.map(([w,c])=>
+      `<div class="kw-row"><span class="kw-name">${esc(w)}</span><span class="kw-bar"><i style="width:${Math.max(8,Math.round(c/max*100))}%"></i></span><span class="kw-cnt">${c}</span></div>`).join("");
+  });
+  return out;
+}
+function renderGlossary(){
+  const app=document.getElementById("app");
+  const q=state.q.toLowerCase();
+  const terms=(state.glossary.terms||[])
+    .filter(t=>!q||((t.term||"")+" "+(t.def||"")+" "+(t.tag||"")).toLowerCase().includes(q))
+    .sort((a,b)=>(a.term||"").localeCompare(b.term||"","ko"));
+  const gl=terms.length?`<ol class="items" style="list-style:none;padding:0">`+terms.map(t=>
+      `<li class="gl-item"><span class="gl-term">${hl(t.term)}</span><span class="gl-tag">${esc(t.tag||"")}</span><span class="gl-added">${esc(t.added||"")}</span>
+       <div class="gl-def">${hl(t.def)}</div></li>`).join("")+`</ol>`
+    :`<div class="empty"><div class="big">📖</div><div>${q?"검색 결과가 없어요.":"아직 등록된 용어가 없어요."}</div></div>`;
+  const trend=q?"":kwTrend();
+  const trendSec=trend?`<div class="panel"><div class="panel-h">🔥 월별 키워드 트렌드</div>
+    <div style="font-size:.72rem;color:var(--faint);margin:0 0 8px">브리핑 제목·핵심 문장에서 자동 집계 (자주 등장한 순)</div>${trend}</div>`:"";
+  app.innerHTML=`<section class="day"><div class="day-date">📖 용어·트렌드</div>
+    ${trendSec}
+    <div class="panel"><div class="panel-h">📚 용어 사전 <span style="color:var(--faint)">${terms.length}개</span></div>${gl}</div></section>`;
+}
 function renderContent(){
   const app=document.getElementById("app");
   if(state.cat==="sched"){renderSchedule();return;}
   if(state.cat==="rev"){renderReview();return;}
+  if(state.cat==="gl"){renderGlossary();return;}
   const html=state.cat==="bm"?renderBM():state.cat==="monthly"?renderMonthly():renderDates();
   app.innerHTML=html.trim()?html:
     `<div class="empty"><div class="big">◖</div><div>${state.q?"검색 결과가 없어요.":"아직 브리핑이 없어요."}</div></div>`;
@@ -416,9 +476,10 @@ function toggleBM(id,src,date){
 }
 (async function(){
   loadBM();loadSRS();
-  const [news,yt,monthly,cal]=await Promise.all([load("news.json"),load("youtube.json"),load("monthly.json"),loadObj("calendar.json")]);
+  const [news,yt,monthly,cal,gl]=await Promise.all([load("news.json"),load("youtube.json"),load("monthly.json"),loadObj("calendar.json"),loadObj("glossary.json")]);
   state.news=news;state.yt=yt;state.monthly=monthly;
   state.sched=Array.isArray(cal.events)?cal.events:[];state.schedUpd=cal.updated||"";
+  state.glossary=gl.terms?gl:{terms:[]};
   news.forEach(e=>{if(e&&e.date)(state.byDate[e.date]=state.byDate[e.date]||{}).news=e;});
   yt.forEach(e=>{if(e&&e.date)(state.byDate[e.date]=state.byDate[e.date]||{}).yt=e;});
   state.dates=Object.keys(state.byDate).sort().reverse();
