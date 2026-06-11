@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Hwei's Daily Briefing</title>
+<style>
+  :root{
+    --bg:#0f1115; --card:#171a21; --card2:#1d212b; --text:#e8eaed; --muted:#9aa3b2;
+    --accent:#5b9dff; --accent2:#ffb454; --line:#262b36; --link:#7db4ff;
+    --news:#4dd0a0; --yt:#ff6b6b;
+  }
+  @media (prefers-color-scheme: light){
+    :root{ --bg:#f5f6f8; --card:#ffffff; --card2:#f0f2f6; --text:#1a1d23; --muted:#5b6573;
+           --accent:#2f6bd8; --accent2:#d98a1f; --line:#e3e6ec; --link:#1f5fce;
+           --news:#159b73; --yt:#d64545; }
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard",
+      "Segoe UI",Roboto,"Helvetica Neue",sans-serif;line-height:1.6;
+    -webkit-font-smoothing:antialiased;}
+  .wrap{max-width:780px;margin:0 auto;padding:24px 16px 64px;}
+  header.top{padding:18px 0 8px;border-bottom:1px solid var(--line);margin-bottom:24px;}
+  h1{font-size:1.7rem;margin:0 0 4px;letter-spacing:-.02em;}
+  h1 .dot{color:var(--accent);}
+  .sub{color:var(--muted);font-size:.9rem;margin:0;}
+  .day{background:var(--card);border:1px solid var(--line);border-radius:16px;
+    padding:18px 18px 6px;margin:0 0 22px;box-shadow:0 1px 2px rgba(0,0,0,.06);}
+  .day-date{font-size:1.05rem;font-weight:700;margin:0 0 14px;display:flex;align-items:center;gap:8px;}
+  .day-date .wd{color:var(--muted);font-weight:500;font-size:.85rem;}
+  .panel{background:var(--card2);border-radius:12px;padding:14px 14px 4px;margin:0 0 14px;border:1px solid var(--line);}
+  .panel-h{font-weight:700;font-size:1rem;margin:0 0 8px;display:flex;align-items:center;gap:7px;}
+  .panel.news .panel-h{color:var(--news);}
+  .panel.yt .panel-h{color:var(--yt);}
+  .insight{background:linear-gradient(0deg,transparent,rgba(91,157,255,.06));
+    border-left:3px solid var(--accent2);border-radius:6px;padding:8px 11px;margin:0 0 12px;
+    font-size:.92rem;}
+  .insight b{color:var(--accent2);}
+  .sec-name{font-size:.82rem;color:var(--muted);font-weight:700;margin:10px 0 6px;text-transform:none;}
+  ol.items{list-style:none;margin:0 0 10px;padding:0;counter-reset:it;}
+  ol.items li{padding:8px 0;border-top:1px dashed var(--line);counter-increment:it;}
+  ol.items li:first-child{border-top:none;}
+  ol.items li .t{display:flex;gap:8px;}
+  ol.items li .t::before{content:counter(it);color:var(--accent);font-weight:700;
+    font-size:.8rem;min-width:1.3em;text-align:right;padding-top:2px;}
+  ol.items li a{color:var(--link);text-decoration:none;font-weight:600;}
+  ol.items li a:hover{text-decoration:underline;}
+  ol.items li .s{color:var(--muted);font-size:.88rem;margin:2px 0 0 calc(1.3em + 8px);}
+  .empty{text-align:center;color:var(--muted);padding:48px 16px;}
+  .empty .big{font-size:2.4rem;margin-bottom:8px;}
+  footer{color:var(--muted);font-size:.78rem;text-align:center;margin-top:40px;}
+  a.src{color:inherit}
+  .loading{text-align:center;color:var(--muted);padding:40px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <h1>Hwei's Daily Briefing<span class="dot">.</span></h1>
+    <p class="sub">매일 아침 8시 · 외식업 뉴스 &amp; 경제·트렌드 유튜브 · 자동 업데이트</p>
+  </header>
+  <main id="app"><div class="loading">불러오는 중…</div></main>
+  <footer>
+    <span id="foot"></span>
+  </footer>
+</div>
+<script>
+const WD=["일","월","화","수","목","금","토"];
+function esc(s){return (s==null?"":String(s)).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+function fmtDate(d){
+  const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(d||"");
+  if(!m) return esc(d||"");
+  const dt=new Date(+m[1],+m[2]-1,+m[3]);
+  return `${+m[2]}월 ${+m[3]}일 <span class="wd">(${WD[dt.getDay()]})</span>`;
+}
+async function load(name){
+  try{ const r=await fetch(name+"?t="+Date.now()); if(!r.ok) return []; const j=await r.json();
+       return Array.isArray(j)?j:[]; }catch(e){ return []; }
+}
+function itemsHTML(items){
+  if(!items||!items.length) return "";
+  return `<ol class="items">`+items.map(it=>`<li>
+    <div class="t">${it.link?`<a href="${esc(it.link)}" target="_blank" rel="noopener">${esc(it.title)}</a>`:`<span>${esc(it.title)}</span>`}</div>
+    ${it.summary?`<div class="s">${esc(it.summary)}</div>`:""}
+  </li>`).join("")+`</ol>`;
+}
+function newsPanel(e){
+  return `<div class="panel news">
+    <div class="panel-h">📰 ${esc(e.title||"외식업 뉴스")}</div>
+    ${e.insight?`<div class="insight"><b>💡 오늘 주목</b> · ${esc(e.insight)}</div>`:""}
+    ${itemsHTML(e.items)}
+  </div>`;
+}
+function ytPanel(e){
+  let body="";
+  if(e.sections&&e.sections.length){
+    body=e.sections.map(s=>`<div class="sec-name">${esc(s.name)}</div>${itemsHTML(s.items)}`).join("");
+  }else{ body=itemsHTML(e.items); }
+  return `<div class="panel yt">
+    <div class="panel-h">🎥 ${esc(e.title||"경제·트렌드 유튜브")}</div>
+    ${e.insight?`<div class="insight"><b>💡 오늘 주목</b> · ${esc(e.insight)}</div>`:""}
+    ${body}
+  </div>`;
+}
+(async function(){
+  const [news,yt]=await Promise.all([load("news.json"),load("youtube.json")]);
+  const byDate={};
+  news.forEach(e=>{ if(!e||!e.date)return; (byDate[e.date]=byDate[e.date]||{}).news=e; });
+  yt.forEach(e=>{ if(!e||!e.date)return; (byDate[e.date]=byDate[e.date]||{}).yt=e; });
+  const dates=Object.keys(byDate).sort().reverse();
+  const app=document.getElementById("app");
+  if(!dates.length){
+    app.innerHTML=`<div class="empty"><div class="big">🌅</div>
+      <div>아직 브리핑이 없어요.</div>
+      <div style="font-size:.85rem;margin-top:6px">첫 브리핑은 다음 아침 8시에 올라옵니다.</div></div>`;
+    document.getElementById("foot").textContent="";
+    return;
+  }
+  app.innerHTML=dates.map(d=>{
+    const b=byDate[d];
+    return `<section class="day">
+      <div class="day-date">📅 ${fmtDate(d)}</div>
+      ${b.news?newsPanel(b.news):""}
+      ${b.yt?ytPanel(b.yt):""}
+    </section>`;
+  }).join("");
+  document.getElementById("foot").textContent=`총 ${dates.length}일치 · 최신 ${dates[0]}`;
+})();
+</script>
+</body>
+</html>
