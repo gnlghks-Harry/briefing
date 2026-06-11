@@ -44,16 +44,15 @@
     padding:2px 8px;border-radius:6px;line-height:1}
   .cal-top button:hover{background:#141416;color:var(--text)}
   .cal-title{font-size:.82rem;font-weight:600;color:var(--text)}
-  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
-  .cal-wd{font-size:.6rem;color:var(--faint);text-align:center;padding:3px 0}
-  .cal-day{font-size:.72rem;text-align:center;padding:5px 0;border-radius:6px;color:var(--faint);
-    aspect-ratio:1;display:flex;align-items:center;justify-content:center;}
-  .cal-day.has{color:var(--text);background:#161616;cursor:pointer;font-weight:600;
-    position:relative;}
-  .cal-day.has::after{content:"";position:absolute;bottom:3px;left:50%;transform:translateX(-50%);
-    width:3px;height:3px;border-radius:50%;background:var(--accent);}
+  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;width:100%}
+  .cal-wd{font-size:.55rem;color:var(--faint);text-align:center;padding:2px 0}
+  .cal-day{font-size:.66rem;text-align:center;height:22px;border-radius:5px;color:var(--faint);
+    min-width:0;display:flex;align-items:center;justify-content:center;}
+  .cal-day.has{color:var(--text);background:#161616;cursor:pointer;font-weight:600;position:relative}
+  .cal-day.has::after{content:"";position:absolute;bottom:2px;left:50%;transform:translateX(-50%);
+    width:3px;height:3px;border-radius:50%;background:var(--accent)}
   .cal-day.has:hover{background:var(--accent);color:#000}
-  .cal-day.empty{color:#2a2a30}
+  .cal-day.empty{}
 
   /* ---- 메인 ---- */
   .content{flex:1;min-width:0;max-width:780px;margin:0 auto;padding:30px 26px 90px;}
