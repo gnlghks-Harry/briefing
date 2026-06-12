@@ -295,33 +295,23 @@ function renderBM(){
 }
 function renderSchedule(){
   const app=document.getElementById("app");
-  const dow=["일","월","화","수","목","금","토"];
-  const now=new Date(),t0=new Date(now.getFullYear(),now.getMonth(),now.getDate());
-  const todayS=fmtLocal(t0);
-  const byDate={};
-  (state.sched||[]).forEach(e=>{if(!e||!e.date)return;
-    if(state.q&&!((e.title||"").toLowerCase().includes(state.q.toLowerCase())))return;
-    (byDate[e.date]=byDate[e.date]||[]).push(e);});
-  Object.values(byDate).forEach(a=>a.sort((x,y)=>
-    (y.allDay?1:0)-(x.allDay?1:0)||(x.start||"").localeCompare(y.start||"")));
+  const todayS=fmtLocal(new Date());
+  const days=state.schedDays||[];
   let cards="";
-  for(let i=0;i<7;i++){
-    const d=new Date(t0.getFullYear(),t0.getMonth(),t0.getDate()+i);
-    const ds=fmtLocal(d),evs=byDate[ds]||[],isToday=ds===todayS;
+  days.forEach(d=>{
+    const isToday=d.date===todayS, cnt=d.count||0;
     const right=isToday?`<span class="sch-today-badge">오늘</span>`
-      :evs.length?`<span class="sch-cnt">${evs.length}건</span>`:`<span class="sch-cnt">—</span>`;
-    const body=evs.length?`<div class="sch-list">`+evs.map(e=>{
-        const time=e.allDay?`<span class="allday">종일</span>`
-          :`${esc(e.start||"")}${e.end?"~"+esc(e.end):""}`;
-        return `<div class="sch-ev"><div class="sch-time">${time}</div><div class="sch-title">${hl(e.title)}</div></div>`;
-      }).join("")+`</div>`
-      :`<div class="sch-none">일정 없음</div>`;
+      :`<span class="sch-cnt">${cnt?cnt+"건":"—"}</span>`;
     cards+=`<div class="sch-day${isToday?' today':''}"><div class="sch-head">
-      <span class="sch-dow">${dow[d.getDay()]}</span>
-      <span class="sch-date">${d.getMonth()+1}.${String(d.getDate()).padStart(2,"0")}</span>${right}</div>${body}</div>`;
-  }
+      <span class="sch-dow">${esc(d.weekday||"")}</span>
+      <span class="sch-date">${esc((d.date||"").slice(5).replace("-","."))}</span>${right}</div></div>`;
+  });
+  if(!cards)cards=`<div class="sch-none">이번 주 일정 정보가 아직 없어요.</div>`;
+  const total=state.schedTotal||0;
   const upd=state.schedUpd?`<div class="sch-upd">📅 ${esc(state.schedUpd)} 기준 · 매일 아침 자동 갱신</div>`:"";
-  app.innerHTML=`<section class="day"><div class="day-date">📅 이번 주 일정</div>${upd}${cards}</section>`;
+  app.innerHTML=`<section class="day"><div class="day-date">📅 이번 주 일정 <span class="wd">총 ${total}건</span></div>${upd}
+    <div class="insight"><span class="lbl">이번 주</span>총 ${total}건 · 상세 일정은 카카오톡으로 보내드려요 <span style="color:var(--faint);font-weight:400">(공개 페이지라 건수만 표시)</span></div>
+    ${cards}</section>`;
 }
 /* ---- 복습 카드 (간격반복) ---- */
 function loadSRS(){try{state.srs=JSON.parse(localStorage.getItem(SRSK)||"{}")||{};}catch(e){state.srs={};}}
@@ -495,7 +485,7 @@ function toggleBM(id,src,date){
   loadBM();loadSRS();
   const [news,yt,monthly,cal,gl,mt]=await Promise.all([load("news.json"),load("youtube.json"),load("monthly.json"),loadObj("calendar.json"),loadObj("glossary.json"),load("meetings.json")]);
   state.news=news;state.yt=yt;state.monthly=monthly;state.mt=mt;
-  state.sched=Array.isArray(cal.events)?cal.events:[];state.schedUpd=cal.updated||"";
+  state.schedDays=Array.isArray(cal.days)?cal.days:[];state.schedTotal=cal.total||0;state.schedUpd=cal.updated||"";
   state.glossary=gl.terms?gl:{terms:[]};
   news.forEach(e=>{if(e&&e.date)(state.byDate[e.date]=state.byDate[e.date]||{}).news=e;});
   yt.forEach(e=>{if(e&&e.date)(state.byDate[e.date]=state.byDate[e.date]||{}).yt=e;});
