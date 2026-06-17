@@ -1,5 +1,82 @@
 [
  {
+  "date": "2026-06-18",
+  "title": "경제·트렌드 유튜브",
+  "insight": "6월 FOMC 매파적 동결 기조와 외국인 수급이 단기 증시 방향을 좌우하는 가운데, 소비 트렌드는 가격·기능보다 '기분'에 반응하는 무드 이코노미로 이동하고 있다.",
+  "sections": [
+   {
+    "name": "📈 경제",
+    "items": [
+     {
+      "highlight": false,
+      "title": "[6월 16일 마감시황] 구천피보다 중요한 변화 시작! '시장의 착각' 세 가지. '도파민 장세'는 끝났다?",
+      "summary": "6월 16일 마감 시황을 다루며, 최근 급등장이 끝난 신호인지 시장이 놓치고 있는 '착각' 세 가지를 전문가 3인이 논의했다.",
+      "link": "https://www.youtube.com/watch?v=hI1AFp1TJDo"
+     },
+     {
+      "highlight": false,
+      "title": "[모닝브리핑] 중동 불안 재환기 뉴욕증시 하락 (2026년 6월 11일)",
+      "summary": "중동 지역 불안이 재차 부각되며 뉴욕증시가 하락 마감한 배경과 주요 지수·환율·원자재 동향을 정리했다.",
+      "link": "https://www.youtube.com/watch?v=8utItJSEKEA"
+     },
+     {
+      "highlight": true,
+      "title": "에너지발 인플레 '확산'...6월 FOMC '매파적 동결' | 임재균 KB증권 리서치센터 전문위원",
+      "summary": "국제유가 상승에 따른 에너지발 인플레이션 재확산 우려와, 6월 FOMC가 금리를 동결하면서도 매파적 신호를 낼 가능성을 짚었다.",
+      "link": "https://www.youtube.com/watch?v=U1eIMZih8hQ"
+     },
+     {
+      "highlight": false,
+      "title": "[이슈] '빚투' 주식 사흘간 5천억 강제 매도 \"2배 불려준다더니\" 개미들 '피눈물' (2026년 6월 12일) | KBS",
+      "summary": "빚을 내 투자한 개인 투자자들의 주식이 사흘 만에 5천억원 규모로 강제 매도된 사례와 개미 투자자 피해 실태를 보도했다.",
+      "link": "https://www.youtube.com/watch?v=rbdZPVP5UOw"
+     },
+     {
+      "highlight": true,
+      "title": "[#찐시황] 외인 '폭풍 매수', 다음 주에도 이어질까? 6월 FOMC, 한국 증시 운명이 달렸다 | 미래에셋자산운용 최창규 이사",
+      "summary": "최근 외국인의 대규모 순매수가 지속될지, 삼성전자·SK하이닉스 선물 포지션 변화를 짚고 6월 FOMC 결과가 한국 증시에 미칠 영향을 전망했다.",
+      "link": "https://www.youtube.com/watch?v=n8RFXTPjrDQ"
+     }
+    ]
+   },
+   {
+    "name": "🔥 트렌드",
+    "items": [
+     {
+      "highlight": true,
+      "title": "\"기업들이 당신의 '기분'에 주목하는 이유\" 2026년 소비 트렌드 | 트렌드 코리아 한다혜 박사",
+      "summary": "2026년 소비자들이 가격·기능보다 '기분'과 감정에 반응해 구매를 결정하는 무드 이코노미 현상과 기업의 대응 전략을 설명했다.",
+      "link": "https://www.youtube.com/watch?v=_a1hvPXuM7I"
+     },
+     {
+      "highlight": false,
+      "title": "트렌드가 없는 게 트렌드? 2026 현실 패션 트렌드 총정리",
+      "summary": "거대한 메가트렌드가 사라지고 개인화된 스타일이 대세가 된 2026년 패션 흐름을 정리했다.",
+      "link": "https://www.youtube.com/watch?v=4JdOJlu3Rso"
+     },
+     {
+      "highlight": false,
+      "title": "2026년 생성형 AI 트렌드, 어떻게 진화할까? | 반병현 대표",
+      "summary": "AI 전문가가 2026년 생성형 AI 기술과 시장이 어떤 방향으로 진화하는지, 산업과 비즈니스에 미치는 영향을 짚었다.",
+      "link": "https://www.youtube.com/watch?v=jG9ANjGpiZs"
+     },
+     {
+      "highlight": false,
+      "title": "\"신입사원, 더이상 없습니다\" AI 전문가가 말하는 2026 채용시장 트렌드 | 책과사람 Ep.62",
+      "summary": "AI 확산으로 신입 채용 규모가 줄어드는 2026년 채용시장의 변화와 기업 인력 운용 방식의 변화를 다뤘다.",
+      "link": "https://www.youtube.com/watch?v=KvLxb_E-A_s"
+     },
+     {
+      "highlight": false,
+      "title": "2026 소셜 마케팅 트렌드: 지금 안 바꾸면 큰일납니다",
+      "summary": "알고리즘 중심에서 소비자가 주도하는 방향으로 옮겨가는 2026년 소셜 마케팅 트렌드와 브랜드의 대응 필요성을 강조했다.",
+      "link": "https://www.youtube.com/watch?v=2OVpJ4s30rk"
+     }
+    ]
+   }
+  ]
+ },
+ {
   "date": "2026-06-17",
   "title": "경제·트렌드 유튜브",
   "insight": "FOMC(6/18) 하루 전, 환율·반도체·비트코인 동반 변동성 속 유튜브發 커머스 충격이 유통 지형을 흔든다",
