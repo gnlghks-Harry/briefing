@@ -3,7 +3,15 @@
  "today": {
   "date": "2026-06-30",
   "weekday": "화",
-  "events": []
+  "events": [
+   {
+    "title": "1on1 미팅2차 대표님",
+    "start": "11:00",
+    "end": "12:00",
+    "allDay": false,
+    "location": ""
+   }
+  ]
  },
  "tomorrow": {
   "date": "2026-07-01",
