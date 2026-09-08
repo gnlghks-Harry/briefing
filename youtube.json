@@ -1,5 +1,70 @@
 [
  {
+  "date": "2026-09-09",
+  "title": "경제·트렌드 유튜브",
+  "insight": "코스피가 9천선을 사이에 두고 국채금리·반도체 변수에 출렁이는 가운데, 소비 시장은 'AI 대전환'과 그에 반작용하는 인간다움을 축으로 재편되고 있다.",
+  "sections": [
+   {
+    "name": "📈 경제",
+    "items": [
+     {
+      "highlight": true,
+      "title": "[12시에 만나요] 코스피 빨간불 오랜만이야👋 드디어 하락 전환한 미국 국채금리!! 앞으로의 향방은?ㅣ한병화 유진투자증권 이사",
+      "summary": "오랜만에 조정을 받은 코스피와 하락 전환한 미국 국채금리의 흐름을 짚는다. 금리 방향 전환이 국내 증시 유동성과 반도체·성장주에 미칠 영향을 전문가 시각으로 전망한다.",
+      "link": "https://www.youtube.com/watch?v=1DGZt7NEOJg"
+     },
+     {
+      "highlight": true,
+      "title": "코스피 하락 출발에 8,800선 후퇴...9천피 탈환 변수는 '이것'",
+      "summary": "코스피가 하락 출발하며 8,800선까지 밀린 배경을 분석한다. 9,000선 재탈환의 핵심 변수로 반도체 관련주와 상승 테마의 흐름을 지목한다.",
+      "link": "https://www.youtube.com/watch?v=ON0GNQ2rDfw"
+     },
+     {
+      "title": "지표추적자 (0906 일)",
+      "summary": "주요 경제지표와 매크로 흐름을 추적하며 이번 주 시장의 방향성을 점검한다. 금리·환율·글로벌 증시 데이터를 근거로 다음 주 대응 전략을 제시한다.",
+      "link": "https://www.youtube.com/watch?v=8tVQwLscYpU"
+     },
+     {
+      "title": "이번 주 관심종목 정리해봅시다",
+      "summary": "한 주간 시장의 관심이 몰린 종목과 테마를 정리한다. 수급과 재료를 기준으로 주목할 만한 종목의 진입·대응 아이디어를 공유한다.",
+      "link": "https://www.youtube.com/watch?v=fvcJR24jzuc"
+     },
+     {
+      "title": "내일의 관심종목 살펴보시죠",
+      "summary": "다음 거래일에 주목할 종목과 이슈를 미리 점검한다. 당일 시장 흐름과 재료를 연결해 단기 대응 포인트를 짚어준다.",
+      "link": "https://www.youtube.com/watch?v=N4lPPOD_mws"
+     }
+    ]
+   },
+   {
+    "name": "🔥 트렌드",
+    "items": [
+     {
+      "highlight": true,
+      "title": "\"기분까지 읽고 쓰는 AI\"…유통업계 뒤흔드는 5대 소비 트렌드",
+      "summary": "소비자의 감정까지 읽어내는 AI가 유통·쇼핑 경험 전반을 바꾸고 있다. 초개인화, 프리미엄 가성비 등 유통업계를 재편하는 5대 소비 트렌드를 정리한다.",
+      "link": "https://www.youtube.com/watch?v=DvEeCE_syuY"
+     },
+     {
+      "title": "2026 트렌드, 싹 읽고 요약해드립니다",
+      "summary": "《트렌드 코리아 2026》을 비롯한 주요 트렌드서를 한 번에 요약한다. 내년 소비·라이프스타일을 관통할 핵심 키워드를 압축해 전달한다.",
+      "link": "https://www.youtube.com/watch?v=C80F4CBzMlg"
+     },
+     {
+      "title": "2026년 트렌드 어떻게 달라질까?",
+      "summary": "AI 대전환 속에서 2026년 소비 흐름이 어떻게 바뀔지 전망한다. AI의 확산과 그에 대응하는 인간다움이라는 두 축을 중심으로 변화를 짚는다.",
+      "link": "https://www.youtube.com/watch?v=X633OEA5oj8"
+     },
+     {
+      "title": "[News Focus] 2026 Outlook Through Trends — Key Keywords",
+      "summary": "트렌드코리아 소비트렌드분석센터 연구위원이 2026년 핵심 키워드를 해설한다. AI가 압도하는 시대에 부상하는 소비·비즈니스 기회를 전망한다.",
+      "link": "https://www.youtube.com/watch?v=HEOn2qS79LI"
+     }
+    ]
+   }
+  ]
+ },
+ {
   "date": "2026-09-08",
   "title": "경제·트렌드 유튜브",
   "insight": "금리 인하 기대와 반도체 랠리 속 증시는 상단을 시험하고, 소비는 가격이 아니라 '기분'과 경험을 중심으로 재편되고 있다.",
